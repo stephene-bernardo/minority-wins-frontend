@@ -1,3 +1,9 @@
 :host{
     width:100%;
 }
+
+.population {
+    text-align: right;
+    width: 100%;
+    font-weight: bold
+}

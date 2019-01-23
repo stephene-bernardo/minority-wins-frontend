@@ -1,5 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { ModalService } from './../modal.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormControl, FormArray, FormControlDirective } from '../../../node_modules/@angular/forms';
 
 @Component({
@@ -7,21 +8,16 @@ import { FormGroup, FormControl, FormArray, FormControlDirective } from '../../.
   templateUrl: './question-creator.component.html',
   styleUrls: ['./question-creator.component.css']
 })
-export class QuestionCreatorComponent implements OnInit {
- 
+export class QuestionCreatorComponent {
+  @Input('roomid') roomid;
   inputBoxBaseName = 'inputbox';
   inputBoxCounter = 1;
-  addInputBoxs = [ this.inputBoxNameCreator(this.inputBoxCounter)];
+  addInputBoxs = [this.inputBoxNameCreator(this.inputBoxCounter)];
   questionForm = new FormGroup({
     question: new FormControl(''),
     inputbox1: new FormControl('')
   });
-  constructor(private modalService: ModalService) {}
-
-  ngOnInit() {
-    console.log(this.inputBoxNameCreator(this.inputBoxCounter));
-  }
-
+  constructor(private modalService: ModalService, private httpClient: HttpClient) { }
   onKeypress(event) {
     if (this.inputBoxNameCreator(this.inputBoxCounter) === event.target.name) {
       ++this.inputBoxCounter;
@@ -34,8 +30,15 @@ export class QuestionCreatorComponent implements OnInit {
   inputBoxNameCreator(count) {
     return `${this.inputBoxBaseName}${count}`;
   }
-  ngSubmit(data){
-    console.log(data);
+  ngSubmit(data) {
+    const choices = [];
+    for (let a = 1; a <= this.inputBoxCounter; a++) {
+      if (data.value[this.inputBoxNameCreator(a)] !== ''){
+        choices.push(data.value[this.inputBoxNameCreator(a)])
+      }
+    }
+    this.httpClient.post(`http://localhost:8080/sendquestions/${this.roomid}`,
+      { 'question': data.value.question, 'choices': choices }).subscribe();
     this.removeModal();
   }
   removeModal() {
