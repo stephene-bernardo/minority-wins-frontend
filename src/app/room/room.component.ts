@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { QuestionCreatorComponent } from './../question-creator/question-creator.component';
 import { ModalService } from './../modal.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
@@ -16,7 +17,8 @@ export class RoomComponent implements OnInit, OnDestroy {
   population=0;
   isWaitingForQuestion = true;
   question = {question: '', choices: []};
-  constructor(private route: ActivatedRoute, private modalService: ModalService) {
+  isWaitingForOtherAnswer = false;
+  constructor(private route: ActivatedRoute, private modalService: ModalService, private httpClient: HttpClient) {
 
   }
 
@@ -27,13 +29,12 @@ export class RoomComponent implements OnInit, OnDestroy {
 
       ws.addEventListener('message', (event: MessageEvent) => {
         let data = JSON.parse(event.data);
-        if(data && data.population){
+        if (data && data.population) {
           this.population = data.population;
-        }else{
+        } else {
           this.isWaitingForQuestion = false;
           this.question = JSON.parse(event.data);
         }
-       
       });
     });
   }
@@ -48,7 +49,10 @@ export class RoomComponent implements OnInit, OnDestroy {
   }
 
   onQuestionClick(choice) {
-    console.log(choice)
+    this.httpClient.get(`http://localhost:8080/sendanswer/${this.id}/${this.question['uid']}/${choice}`)
+      .subscribe();
+    this.isWaitingForOtherAnswer  = true;
+    console.log( this.question)
   }
 
   ngOnDestroy() {
