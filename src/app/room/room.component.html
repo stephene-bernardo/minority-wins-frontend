@@ -32,7 +32,7 @@
   </div>
 
   <div class="hero-body" *ngIf="isWaitingForOtherAnswer">
-    <div class="container">
+    <div class="container  has-text-centered">
       <h1 class="title">
         Waiting For Other users answer...
       </h1>
@@ -40,25 +40,36 @@
   </div>
 </section>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th></th>
-      <th>Question</th>
-      <th>Breakdown</th>
-      <th>Answer</th>
-      <th>Minority?</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let data of choicesPoll">
-      <td></td>
-      <td>{{data.question}}</td>
-      <td><span *ngFor="let choice of data.choicesPoll">
-        <strong>{{choice.choice}}</strong>:{{choice.count}}&ensp;</span>
-      </td>
-      <td>{{questionIdToChoice.get(data.questionId)}}</td>
-      <td>{{isMinority(data.choicesPoll, questionIdToChoice.get(data.questionId))}}</td>
-    </tr>
-  </tbody>
-</table>
+<section class="hero is-medium" >
+    <table class="table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Question</th>
+            <th>Breakdown</th>
+            <th>Answer</th>
+            <th>Minority?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of choicesPoll">
+            <td></td>
+            <td>{{data.question}}</td>
+            <td><span *ngFor="let choice of data.choicesPoll">
+              <strong>{{choice.choice}}</strong>:{{choice.count}}&ensp;</span>
+            </td>
+            <td>{{questionIdToChoice.get(data.questionId)}}</td>
+            <td>{{isMinority(data.choicesPoll, questionIdToChoice.get(data.questionId))}}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Total Score: {{totalScore(choicesPoll)}}</th>
+          </tr>
+        </tfoot>
+      </table>
+</section>

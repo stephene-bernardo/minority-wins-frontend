@@ -72,7 +72,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     this.sub.unsubscribe();
   }
 
-  isMinority(choices, answer){
+  isMinority(choices, answer) {
     let lowest = new Map();
     let counter;
     for(let choice of choices){
@@ -86,5 +86,15 @@ export class RoomComponent implements OnInit, OnDestroy {
       }
     }
     return lowest.get(counter).includes(answer);
+  }
+
+  totalScore(choicesPoll){
+    let count = 0;
+    for(let data of choicesPoll){
+      if(this.isMinority(data.choicesPoll, this.questionIdToChoice.get(data.questionId))){
+        count++;
+      }
+    }
+    return count;
   }
 }
