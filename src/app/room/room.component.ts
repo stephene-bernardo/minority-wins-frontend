@@ -18,8 +18,13 @@ export class RoomComponent implements OnInit, OnDestroy {
   isWaitingForQuestion = true;
   question = {question: '', choices: []};
   isWaitingForOtherAnswer = false;
+  questionIdToChoice;
+  questions
+  choicesPoll
   constructor(private route: ActivatedRoute, private modalService: ModalService, private httpClient: HttpClient) {
-
+    this.questionIdToChoice = new Map();
+    this.questions = []
+    this.choicesPoll = []
   }
 
   ngOnInit() {
@@ -31,9 +36,16 @@ export class RoomComponent implements OnInit, OnDestroy {
         let data = JSON.parse(event.data);
         if (data && data.population) {
           this.population = data.population;
+        } else if(data && data.isEndWaiting) {
+          this.isWaitingForOtherAnswer = false;
+          this.isWaitingForQuestion = true;
+          console.log(data)
+          this.choicesPoll = [...this.choicesPoll, data];
         } else {
           this.isWaitingForQuestion = false;
-          this.question = JSON.parse(event.data);
+          this.question = data;
+          console.log(`${this.question['uid']} `)
+          this.questions = [...this.questions, data]
         }
       });
     });
@@ -52,10 +64,27 @@ export class RoomComponent implements OnInit, OnDestroy {
     this.httpClient.get(`http://localhost:8080/sendanswer/${this.id}/${this.question['uid']}/${choice}`)
       .subscribe();
     this.isWaitingForOtherAnswer  = true;
-    console.log( this.question)
+    this.questionIdToChoice.set(this.question['uid'], choice);
+
   }
 
   ngOnDestroy() {
     this.sub.unsubscribe();
+  }
+
+  isMinority(choices, answer){
+    let lowest = new Map();
+    let counter;
+    for(let choice of choices){
+      if(counter > choice.count || !counter){
+        counter = choice.count;
+      }
+      if(lowest.has(choice.count)){
+        lowest.get(choice.count).push(choice.choice)
+      } else {
+        lowest.set(choice.count, [choice.choice])
+      }
+    }
+    return lowest.get(counter).includes(answer);
   }
 }
