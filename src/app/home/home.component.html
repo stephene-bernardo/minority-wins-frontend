@@ -1,8 +1,20 @@
 
-<div class="columns">
-    <a class=" column button is-success  is-outlined  
+
+<section class="hero is-medium">
+  <div class="hero-body">
+    <div class="container">
+      <a class=" column button is-primary  is-outlined  
       is-large is-fullwidth is-offset-one-quarter is-half"
       (click)=createroom()>
         Create Room
       </a>
-</div>
+      <a class=" column button is-primary  is-outlined  
+      is-large is-fullwidth is-offset-one-quarter is-half"
+      (click)=enterRoom(roomid.value)>
+        Room ID: 
+          <input class="input" type="text" #roomid (click)="$event.stopPropagation()">
+      </a>
+    
+    </div>
+  </div>
+</section>

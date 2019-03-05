@@ -1,7 +1,23 @@
 
 <!-- Custom modal setup -->
-
+<nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" routerLink="/">
+        <strong style="font-size:20px;">Minority Win</strong>
+      </a>
+  
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+  </nav>
+  
 <div class="parent-div" style="height:100%;">
+ 
+
+
     <router-outlet ></router-outlet>
     <div id="modal-container" class="hidden"></div>
     <div id="overlay" (click)="removeModal()" class="hidden"></div>

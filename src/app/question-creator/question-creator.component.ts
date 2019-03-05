@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { ModalService } from './../modal.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormControl, FormArray, FormControlDirective } from '../../../node_modules/@angular/forms';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-question-creator',
@@ -37,7 +38,7 @@ export class QuestionCreatorComponent {
         choices.push(data.value[this.inputBoxNameCreator(a)])
       }
     }
-    this.httpClient.post(`http://localhost:8080/sendquestions/${this.roomid}`,
+    this.httpClient.post(`${environment.minorityBackendUrl}/sendquestions/${this.roomid}`,
       { 'question': data.value.question, 'choices': choices }).subscribe();
     this.removeModal();
   }

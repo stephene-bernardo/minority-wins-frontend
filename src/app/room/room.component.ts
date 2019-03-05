@@ -1,3 +1,4 @@
+
 import { HttpClient } from '@angular/common/http';
 import { QuestionCreatorComponent } from './../question-creator/question-creator.component';
 import { ModalService } from './../modal.service';
@@ -5,6 +6,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from '../../../node_modules/rxjs/Observable';
 import { Subscription } from '../../../node_modules/rxjs/Subscription';
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-room',
@@ -21,6 +23,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   questionIdToChoice;
   questions
   choicesPoll
+  isConnectionFailed = false;
   constructor(private route: ActivatedRoute, private modalService: ModalService, private httpClient: HttpClient) {
     this.questionIdToChoice = new Map();
     this.questions = []
@@ -30,8 +33,11 @@ export class RoomComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
       this.id = params['roomid'];
-      const ws = new WebSocket(`ws://localhost:8080/${this.id }`);
-
+      const ws: WebSocket = new WebSocket(`${environment.minorityBackendWS}/${this.id }`);
+      const that = this;
+      ws.onerror = function(event){
+        that.isConnectionFailed = true;
+      }
       ws.addEventListener('message', (event: MessageEvent) => {
         let data = JSON.parse(event.data);
         if (data && data.population) {
@@ -61,7 +67,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   }
 
   onQuestionClick(choice) {
-    this.httpClient.get(`http://localhost:8080/sendanswer/${this.id}/${this.question['uid']}/${choice}`)
+    this.httpClient.get(`${environment}/sendanswer/${this.id}/${this.question['uid']}/${choice}`)
       .subscribe();
     this.isWaitingForOtherAnswer  = true;
     this.questionIdToChoice.set(this.question['uid'], choice);

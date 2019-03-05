@@ -1,75 +1,90 @@
 
     
-<div class="population"> Population: {{population}}</div>
+<div  *ngIf="!isConnectionFailed">
+  <div class="population"> Population: {{population}}</div>
 
-<section class="hero is-medium" >
-  <div class="hero-body" *ngIf="isWaitingForQuestion">
-    <div class="container  has-text-centered">
-      <h1 class="title">
-        Waiting For Questions
-      </h1>
-      <h2 class="subtitle">
-        <a class="  button is-success  is-outlined is-large" (click)=createQuestion()>Create Question</a>
-      </h2>
+  <section class="hero is-medium" >
+    <div class="hero-body" *ngIf="isWaitingForQuestion">
+      <div class="container  has-text-centered">
+        <h1 class="title">
+          Waiting For Questions
+        </h1>
+        <h2 class="subtitle">
+          <a class="  button is-success  is-outlined is-large" (click)=createQuestion()>Create Question</a>
+        </h2>
+      </div>
     </div>
-  </div>
-
-  <div class="hero-body" *ngIf="!isWaitingForQuestion && !isWaitingForOtherAnswer">
-    <div class="container">
-      <h1 class="title">
-        Question: {{question.question}}
-      </h1>
-      <div class="subtitle">
-        
-        <div class="columns is-multiline ">
-          <div  class="column is-full">Choices: </div>
-          <div class="centered column is-half" *ngFor="let choice of question.choices">
-              <button class="button column is-half" (click)="onQuestionClick(choice)">{{choice}}</button>
+  
+    <div class="hero-body" *ngIf="!isWaitingForQuestion && !isWaitingForOtherAnswer">
+      <div class="container">
+        <h1 class="title">
+          Question: {{question.question}}
+        </h1>
+        <div class="subtitle">
+          
+          <div class="columns is-multiline ">
+            <div  class="column is-full">Choices: </div>
+            <div class="centered column is-half" *ngFor="let choice of question.choices">
+                <button class="button column is-half" (click)="onQuestionClick(choice)">{{choice}}</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-
-  <div class="hero-body" *ngIf="isWaitingForOtherAnswer">
-    <div class="container  has-text-centered">
-      <h1 class="title">
-        Waiting For Other users answer...
-      </h1>
+  
+    <div class="hero-body" *ngIf="isWaitingForOtherAnswer">
+      <div class="container  has-text-centered">
+        <h1 class="title">
+          Waiting For Other users answer...
+        </h1>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+  
+  <section class="hero is-medium" >
+      <table class="table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Question</th>
+              <th>Breakdown</th>
+              <th>Answer</th>
+              <th>Minority?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of choicesPoll">
+              <td></td>
+              <td>{{data.question}}</td>
+              <td><span *ngFor="let choice of data.choicesPoll">
+                <strong>{{choice.choice}}</strong>:{{choice.count}}&ensp;</span>
+              </td>
+              <td>{{questionIdToChoice.get(data.questionId)}}</td>
+              <td>{{isMinority(data.choicesPoll, questionIdToChoice.get(data.questionId))}}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th>Total Score: {{totalScore(choicesPoll)}}</th>
+            </tr>
+          </tfoot>
+        </table>
+  </section>
+  
+</div>
 
 <section class="hero is-medium" >
-    <table class="table">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Question</th>
-            <th>Breakdown</th>
-            <th>Answer</th>
-            <th>Minority?</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let data of choicesPoll">
-            <td></td>
-            <td>{{data.question}}</td>
-            <td><span *ngFor="let choice of data.choicesPoll">
-              <strong>{{choice.choice}}</strong>:{{choice.count}}&ensp;</span>
-            </td>
-            <td>{{questionIdToChoice.get(data.questionId)}}</td>
-            <td>{{isMinority(data.choicesPoll, questionIdToChoice.get(data.questionId))}}</td>
-          </tr>
-        </tbody>
-        <tfoot>
-          <tr>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th>Total Score: {{totalScore(choicesPoll)}}</th>
-          </tr>
-        </tfoot>
-      </table>
-</section>
+  <div class="hero-body" *ngIf="isConnectionFailed">
+    <div class="container  has-text-centered">
+      <h1 class="title">
+        Cannot Access this Room ID
+      </h1>
+      <h2 class="subtitle">
+        Please try another room
+      </h2>
+    </div>
+  </div>
