@@ -67,7 +67,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   }
 
   onQuestionClick(choice) {
-    this.httpClient.get(`${environment}/sendanswer/${this.id}/${this.question['uid']}/${choice}`)
+    this.httpClient.get(`${environment.minorityBackendUrl}/sendanswer/${this.id}/${this.question['uid']}/${choice}`)
       .subscribe();
     this.isWaitingForOtherAnswer  = true;
     this.questionIdToChoice.set(this.question['uid'], choice);
